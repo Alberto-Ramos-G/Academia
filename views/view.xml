@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+    <record model="ir.actions.act_window" id="act_student_academia">
+              <field name="name">Registro de estudiantes</field>
+              <field name="res_model">academia.student</field>
+              <field name="view_mode">tree,form</field>
+    </record>
+         <menuitem id="id_principal_academia" name="Academia Practica" sequence="10"/>
+          <menuitem id="id_menu_student" parent="id_principal_academia" name="Registros" sequence="0"/>
+          <menuitem id="id_menu_student_act" parent="id_menu_student" name="Estudiantes" action="act_student_academia" sequence="0"/>
+    </data>
+</odoo>
