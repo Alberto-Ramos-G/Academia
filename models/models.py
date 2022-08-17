@@ -11,3 +11,11 @@ class academia_student(models.Model):
     last_name = fields.Char("Last_name",size=128)
     photo = fields.Char("last_name",size=128)
     create_date = fields.Datetime("Fecha de creacion",readonly=True)
+    note =  fields.Html("Comentarios")
+    state = fields.Selection([
+        ('draft',"Borrador"),
+        ('process',"En proceso"),
+        ('done',"Egresado"),
+        ('cancel',"Expulsado")
+        ],"Estado",default="draft")
+    active = fields.Boolean("Activo",default=True)
