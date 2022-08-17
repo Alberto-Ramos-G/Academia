@@ -9,3 +9,5 @@ class academia_student(models.Model):
     _description="Gestion de estudiante"
     name = fields.Char("Nombre",size=128)
     last_name = fields.Char("Last_name",size=128)
+    photo = fields.Char("last_name",size=128)
+    create_date = fields.Datetime("Fecha de creacion",readonly=True)

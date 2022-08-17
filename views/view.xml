@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-    <data>
-    <record model="ir.actions.act_window" id="act_student_academia">
-              <field name="name">Registro de estudiantes</field>
-              <field name="res_model">academia.student</field>
-              <field name="view_mode">tree,form</field>
-    </record>
-         <menuitem id="id_principal_academia" name="Academia Practica" sequence="10"/>
-          <menuitem id="id_menu_student" parent="id_principal_academia" name="Registros" sequence="0"/>
-          <menuitem id="id_menu_student_act" parent="id_menu_student" name="Estudiantes" action="act_student_academia" sequence="0"/>
-    </data>
-</odoo>
+        <record model="ir.actions.act_window" id="act_student_academia">
+            <field name="name">Registro de estudiantes</field>
+            <field name="res_model">academia.student</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.ui.view" id="tree_student_id">
+            <field name="name">academia.student.tree</field>
+                <field name="model">academia.student</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                <tree string="Listado de estudiantes">
+                    <field name="name"/>
+                    <field name="last_name"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="academy_student_form">
+            <field name="name">academia.student.forms</field>
+            <field name="model">academia.student</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Listado de estudiantes">
+                    <header></header>
+                    <sheet>
+                        <field name="photo" widget="image" class="oe_avatar oe_left" options="{'preview_image': 'image_medium','size':[90,90]}"/>
+                        <group colspan="4">
+                            <field name="name"/>
+                            <field name="last_name"/>
+                            <field name="create_date"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <menuitem id="id_principal_academia" name="Academia Practica" sequence="10"/>
+        <menuitem id="id_menu_student" parent="id_principal_academia" name="Registros" sequence="0"/>
+        <menuitem id="id_menu_student_act" parent="id_menu_student" name="Estudiantes" action="act_student_academia" sequence="0"/> 
+    </odoo>
