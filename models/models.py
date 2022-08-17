@@ -4,10 +4,15 @@
 
 from odoo import api,fields,models
 
+class ResPartner(models.Model):
+    _name ="res.partner"
+    _inherit="res.partner"
+    company_type = fields.Selection(selection_add =[('is_school','Escuela')])
+
 class academia_student(models.Model):
     _name="academia.student"
     _description="Gestion de estudiante"
-    name = fields.Char("Nombre",size=128)
+    name = fields.Char("Nombre",size=128,required=True)
     last_name = fields.Char("Last_name",size=128)
     photo = fields.Char("last_name",size=128)
     create_date = fields.Datetime("Fecha de creacion",readonly=True)
@@ -19,3 +24,6 @@ class academia_student(models.Model):
         ('cancel',"Expulsado")
         ],"Estado",default="draft")
     active = fields.Boolean("Activo",default=True)
+    age = fields.Integer("Edad")
+    #Creacion de las relaciones 
+    partner_id = fields.Many2one('res.partner','Escuela')

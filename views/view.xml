@@ -33,7 +33,9 @@
                         <field name="name"/>
                         <field name="last_name"/>
                         <field name="create_date"/>
-                        <field name="active" />
+                        <field name="active"/>
+                        <field name="age"/>
+                        <field name="partner_id" />
                     </group>
                     <group>
                         <notebook>

@@ -5,7 +5,7 @@
 {
    "name":"Modulo Academia QUADIT",
    "version":"15.0.0",
-   "depends":["base"],
+   "depends":["base", "sale_management"],
    "author":("QUADIT"),
    "licence":"AGPL-3",
    "summary":"""Modulo de practica QUADIT""",
