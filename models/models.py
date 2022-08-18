@@ -7,7 +7,8 @@ from odoo import api,fields,models,exceptions
 class ResPartner(models.Model):
     _name ="res.partner"
     _inherit="res.partner"
-    company_type = fields.Selection(selection_add =[('is_school','Escuela')])
+    company_type = fields.Selection(selection_add =[('is_school','Escuela'), ('student_id', 'Estudiante')])
+    student_id = fields.Many2one('academia.student', 'Estudiante')
 
 class academia_student(models.Model):
     _name="academia.student"
@@ -26,6 +27,7 @@ class academia_student(models.Model):
     active = fields.Boolean("Activo",default=True)
     age = fields.Integer("Edad")
     curp = fields.Char("CURP",size=18,required=True)
+    country = fields.Many2one('res.country','Pais',related="partner_id.country_id")
     
     #Creacion de las relaciones 
     partner_id = fields.Many2one('res.partner','Escuela')
@@ -36,3 +38,22 @@ class academia_student(models.Model):
             if record.curp:
                 if len(record.curp) != 18:
                     raise exception.ValidationError('La curp debe ser de 18 digitos')
+                
+    def create(self, values):
+        if values['name']:
+            nombre = values['name']
+            if self.env['academia.student'].search([('name', '=', self.name)]): 
+                values.update({ 
+                    'name': values['name']+"(copy)"
+                })
+        res = super(academia_student, self).create(values) 
+        partner_obj = self.env['res.partner'] 
+        vals_to_partner = { 
+            'name': res['name']+" "+res["last_name"],
+            'company_type': "student_id", 
+            'student_id': res['id'],
+        } 
+        print(vals_to_partner) 
+        partner = partner_obj.create(vals_to_partner)
+        print('-->partner_id: ', partner)
+        return res
