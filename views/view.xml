@@ -32,6 +32,7 @@
                     <group colspan="4">
                         <field name="name"/>
                         <field name="last_name"/>
+                        <field name="curp" placeholder='ZADM981120MVZLR07' />
                         <field name="create_date"/>
                         <field name="active"/>
                         <field name="age"/>
