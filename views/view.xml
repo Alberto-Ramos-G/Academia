@@ -19,7 +19,7 @@
         </field>
     </record>
     <record model="ir.ui.view" id="academy_student_form">
-        <field name="name">academia.student.forms</field>
+        <field name="name">academia.student.form</field>
         <field name="model">academia.student</field>
         <field name="type">form</field>
         <field name="arch" type="xml">

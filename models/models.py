@@ -27,13 +27,13 @@ class academia_student(models.Model):
         ],"Estado",default="draft")
     active = fields.Boolean("Activo",default=True)
     age = fields.Integer("Edad")
-    curp = fields.Char("CURP",size=18,required=True)
+    curp = fields.Char("CURP",size=18,copy=False)
     country = fields.Many2one('res.country','Pais',related="partner_id.country_id")
     
     #Creacion de las relaciones 
     partner_id = fields.Many2one('res.partner','Escuela')
     invoice_ids = fields.Many2many('account.move',
-                                   'student invoice_rel',
+                                   'student_invoice_rel',
                                    'student_id', 'journal_id',
                                    'Facturas')
 
