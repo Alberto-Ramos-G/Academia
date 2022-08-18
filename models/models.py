@@ -30,8 +30,13 @@ class academia_student(models.Model):
     curp = fields.Char("CURP",size=18,copy=False)
     country = fields.Many2one('res.country','Pais',related="partner_id.country_id")
     
+    #Funciones
+    def get_school_default(self):
+        school_id= self.env['res.partner'].search([('name', '=', 'Escuela por defecto')]) 
+        return school_id
+    
     #Creacion de las relaciones 
-    partner_id = fields.Many2one('res.partner','Escuela')
+    partner_id = fields.Many2one('res.partner','Escuela',default=get_school_default)
     invoice_ids = fields.Many2many('account.move',
                                    'student_invoice_rel',
                                    'student_id', 'journal_id',
