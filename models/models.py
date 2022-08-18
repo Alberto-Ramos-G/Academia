@@ -13,7 +13,8 @@ class ResPartner(models.Model):
 class academia_student(models.Model):
     _name="academia.student"
     _description="Gestion de estudiante"
-    name = fields.Char("Nombre",size=128,required=True)
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    name = fields.Char("Nombre",size=128,required=True,track_visibility='onchange')
     last_name = fields.Char("Last_name",size=128)
     photo = fields.Char("last_name",size=128)
     create_date = fields.Datetime("Fecha de creacion",readonly=True)
@@ -31,14 +32,28 @@ class academia_student(models.Model):
     
     #Creacion de las relaciones 
     partner_id = fields.Many2one('res.partner','Escuela')
-    
+    invoice_ids = fields.Many2many('account.move',
+                                   'student invoice_rel',
+                                   'student_id', 'journal_id',
+                                   'Facturas')
+
     @api.constrains('curp')
     def check_curp(self):
         for record in self:
             if record.curp:
                 if len(record.curp) != 18:
                     raise exception.ValidationError('La curp debe ser de 18 digitos')
-                
+        
+    def unlink(self):
+        partner_obj = self.env['res.partner'] 
+        partners = partner_obj.search([('student_id', 'in', self.ids)]) 
+        print("partners: ",partners) 
+        if partners:
+            for partner in partners: 
+                partner.unlink() 
+        res = super(academia_student, self).unlink()
+        return res   
+         
     def create(self, values):
         if values['name']:
             nombre = values['name']
