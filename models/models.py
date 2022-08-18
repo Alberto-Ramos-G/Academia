@@ -9,6 +9,35 @@ class ResPartner(models.Model):
     _inherit="res.partner"
     company_type = fields.Selection(selection_add =[('is_school','Escuela'), ('student_id', 'Estudiante')])
     student_id = fields.Many2one('academia.student', 'Estudiante')
+    
+
+class academia_materia_list(models.Model):
+    _name = 'academia.materia.list' 
+    _description = "academia materia list"
+
+    grado_id = fields.Many2one('academia.grado', 'ID referencia')
+    materia_id = fields.Many2one('academia.materia', 'Materia', required=True)
+
+class academia_grado(models.Model):
+    _name = 'academia.grado'
+    _description = 'Modelo de los grados de la materia que tiene la escuela'
+
+    name =  fields.Selection([ 
+        ('1','Primero'),
+        ('2', 'Segundo'),
+        ('3', 'Tercero'),
+        ('4', 'Cuarto'),
+        ('5', 'Quinto'),
+        ('6', 'Sexto'),
+    ], 'Grado', required=True) 
+    group = fields.Selection([
+            ('a', 'A'),
+            ('b' 'B'), 
+            ('c', 'C'),
+
+], 'Grupo', required=True)
+
+materia_ids = fields.One2many('academia.materia.list', 'grado_id', 'Materias')
 
 class academia_student(models.Model):
     _name="academia.student"
