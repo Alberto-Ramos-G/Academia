@@ -9,9 +9,44 @@ class make_student_invoice (models.TransientModel):
     _description = 'Asistente para la generacion de facturas'
     journal_id = fields. Many2one('account.journal', 'Diario', domain="[('type', '=', 'sale')]")
     def make_invoices (self):
-        print('aqui se generará una factura')
-        return True
-    
+        active_ids = [self._context['active_ids']] 
+        category_obj = self.env['product.category'] 
+        category_id = category_obj.search([('name', 'Factura colegiatura')])
+        for student_id in active_ids:
+            student_br = self.env('academia.student').search([('id', '=', student_id)])
+            if student_br.state in ('draft', 'cancel'): 
+                raise exceptions.ValidationError('No puedes generar una factura para un estudiante expulsado o en borrador')
+                return False
+            if category_id:
+                product_obj = self.env['product.product'] 
+                products = product_obj.search([('categ_id', '=', category_id.id)])
+                invoice_obj = self.env['account.move'] 
+                partner_br = self.env['res.partner'].search([('student_id', '=', student_br.id)]) 
+                if partner_br:
+                    partner_id =  partner_br[0].id
+                    invoice_lines = []
+                    for product in products:
+                        xline = (0,0,{
+                            'product_id': product.id,
+                            'price_unit': product.list_price,
+                            'quantity': 1,
+                            'account_id': product.catag_id.property_account_income_categ_id.id,
+                            'name': product.name + " ["+ str(product.default_code) + "]",
+                        })
+                        invoice_lines.append(xline)
+                        vals = { 
+                        'partner_id': partner_id,
+                        'invoice_payment_term_id': 7,
+                        'move_type': 'out_invoice',
+                        'invoice_line_ids': invoice_lines,
+                        } 
+                        invoice_id = self.env['account.move'].create(vals) 
+                        invoice_list = [x.id for x in student_br.invoice_ids]
+                        invoice_list.append(invoice_id.id)
+                        student_br.write({
+                                'invoice_ids': [(6,0,invoice_list)]                          
+                        })
+                        return True
 class ResPartner(models.Model):
     _name = "res.partner"
     _inherit = "res.partner"
