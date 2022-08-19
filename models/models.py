@@ -2,11 +2,16 @@
 # Copyright 2022 - QUADIT, SA DE CV(https://www.quadit.mx)
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from string import digits
-from unicodedata import digit
 from odoo import api, fields, models, exceptions
 
-
+class make_student_invoice (models.TransientModel):
+    _name = 'make.student.invoice'
+    _description = 'Asistente para la generacion de facturas'
+    journal_id = fields. Many2one('account.journal', 'Diario', domain="[('type', '=', 'sale')]")
+    def make_invoices (self):
+        print('aqui se generará una factura')
+        return True
+    
 class ResPartner(models.Model):
     _name = "res.partner"
     _inherit = "res.partner"
@@ -161,3 +166,16 @@ class academia_student(models.Model):
     def draft(self): 
         self.state = 'draft' 
         return True
+    
+    def generarFactura (self):
+        return {
+            'name': 'Generacion facturas', 
+            'res_model': 'make.student.invoice', 
+            'type': 'ir.actions.act_window',
+            'view_id': self.env.ref('new-module.wizard_student_invoice').id,
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+            'key2': "client_action_multi",
+            'context': {'active_ids': self.id}
+            }

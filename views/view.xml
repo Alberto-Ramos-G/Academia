@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
+    <record model="product.category" id="category_student">
+        <field name="name">Factura colegiatura</field>
+    </record>
+    <record id="wizard_student_invoice" model="ir.ui.view">
+        <field name="name">make.student.invoice.form</field>
+        <field name="model">make.student.invoice</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Asistente para la generacion de facturas">
+                <header></header>
+                <sheet>
+                    <separator string="Introduce el diario para la factura"/>
+                    <field name="journal_id" required="True"/>
+                </sheet>
+                <footer>
+                    <div align="center">
+                        <button name="make_invoices" string="Generar" type="object"/>
+                        <button special="cancel" string="Cerrar" type="object"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
     <record model="ir.actions.act_window" id="act_student_academia">
         <field name="name">Registro de estudiantes</field>
         <field name="res_model">academia.student</field>
@@ -70,6 +93,7 @@
         <field name="arch" type="xml">
             <form string="Listado de estudiantes">
                 <header>
+                    <button string="Generacion de facturas" name="generarFactura" type="object" class="oe_highlight"/>
                     <button string="Confirmar" name="confirm" type="object" states="draft"/>
                     <button string="Cancelar" name="cancel" type="object" states="draft"/>
                     <button string="Egresar" name="done" type="object" states="process"/>
