@@ -21,6 +21,12 @@ class academia_materia_list(models.Model):
 class academia_grado(models.Model):
     _name = 'academia.grado'
     _description = 'Modelo de los grados de la materia que tiene la escuela'
+    
+    @api.depends('name','group') 
+    def calculate_name(self):
+        for record in self: 
+            complete_name = record.name+"-"+record.group 
+            record.complete_name = complete_name
 
     name =  fields.Selection([ 
         ('1','Primero'),
@@ -38,6 +44,7 @@ class academia_grado(models.Model):
 ], 'Grupo', required=True)
 
 materia_ids = fields.One2many('academia.materia.list', 'grado_id', 'Materias')
+complete_name = fields.Char('Nombre completo', size=128, compute="calculate_name", store=True)
 
 class academia_student(models.Model):
     _name="academia.student"
