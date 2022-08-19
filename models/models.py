@@ -2,6 +2,8 @@
 # Copyright 2022 - QUADIT, SA DE CV(https://www.quadit.mx)
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from string import digits
+from unicodedata import digit
 from odoo import api,fields,models,exceptions
 
 class ResPartner(models.Model):
@@ -27,6 +29,7 @@ class academia_grado(models.Model):
         for record in self: 
             complete_name = record.name+"-"+record.group 
             record.complete_name = complete_name
+    _rec_name ="complete_name"
 
     name =  fields.Selection([ 
         ('1','Primero'),
@@ -40,11 +43,10 @@ class academia_grado(models.Model):
             ('a', 'A'),
             ('b' 'B'), 
             ('c', 'C'),
+    ], 'Grupo', required=True)
 
-], 'Grupo', required=True)
-
-materia_ids = fields.One2many('academia.materia.list', 'grado_id', 'Materias')
-complete_name = fields.Char('Nombre completo', size=128, compute="calculate_name", store=True)
+    materia_ids = fields.One2many('academia.materia.list', 'grado_id', 'Materias')
+    complete_name = fields.Char('Nombre completo', size=128, compute="calculate_name", store=True)
 
 class academia_student(models.Model):
     _name="academia.student"
@@ -71,13 +73,28 @@ class academia_student(models.Model):
         school_id= self.env['res.partner'].search([('name', '=', 'Escuela por defecto')]) 
         return school_id
     
+    @api.depends('calificaciones_id')
+    def calcular_promedio(self):
+        acum = 0.0
+        if len(self.calificaciones_id) > 0:
+            for xcal in self.calificaciones_id:
+                acum += xcal.calificacion
+                if acum:
+                    self.promedio = acum/len(self.calificaciones_id)
+        else:
+            self.promedio = 0.0
+    
     #Creacion de las relaciones 
     partner_id = fields.Many2one('res.partner','Escuela',default=get_school_default)
     invoice_ids = fields.Many2many('account.move',
                                    'student_invoice_rel',
                                    'student_id', 'journal_id',
                                    'Facturas')
-
+    grado_id = fields.Many2one('academia.grado', 'Grado')
+    calificaciones_id = fields.One2many('academia.calificacion', 'student_id', 'Calificaciones')
+    promedio = fields.Float('Promedio',digits=(3,2), compute="calcular_promedio")
+ 
+    
     @api.constrains('curp')
     def check_curp(self):
         for record in self:

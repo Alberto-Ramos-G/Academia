@@ -23,6 +23,11 @@
         <field name="res_model">academia.materia</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record model="ir.actions.act_window" id="act_config_grado">
+        <field name="name">Grado</field>
+        <field name="res_model">academia.grado</field>
+        <field name="view_mode">tree,form</field>
+    </record>
     <record model="ir.ui.view" id="academia_grado">
         <field name="name">academia.grado.form</field>
         <field name="model">academia.grado</field>
@@ -78,15 +83,27 @@
                         <field name="age"/>
                         <field name="partner_id" />
                         <field name="country" />
+                        <field name="grado_id"/>
                     </group>
                     <group>
                         <notebook>
-                            <pages>
-                                <field name="note"/>
-                            </pages>
+                            <page string="Calificaciones">
+                                <field name="calificaciones_id">
+                                    <tree string="Calificaciones" editable="bottom">
+                                        <field name="name" required="True"></field>
+                                        <field name="calificacion" required="True"></field>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="grupo_promedio">
+                                    <field name="promedio"/>
+                                </group>
+                            </page>
                             <page name="Facturas">
                                 <field name="invoice_ids" />
                             </page>
+                            <pages string= "Comentarios">
+                                <field name="note"/>
+                            </pages>
                         </notebook>
                     </group>
                 </sheet>
